@@ -1,0 +1,289 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      lang="en">
+    <link rel="stylesheet" type="text/css" href="../style/DiseñoPlatillo.css"/>
+    <h:head>
+        <title>SkyFood - Sistema de Ventas</title>
+    </h:head>
+    <h:body>
+
+        <!--Menu de las capas-->
+
+        <div class="card">
+            <h:form style="margin-bottom: 15px">
+                <p:growl id="messages"/>
+
+                <p:menubar>
+                    <p:submenu label="Personas" icon="pi pi-users">
+                        <p:menuitem value="Empleado" outcome="Empleado" icon="pi pi-shopping-cart"/>
+                        <p:menuitem value="Cliente" outcome="Cliente" icon="pi pi-chart-line"/>
+                        <p:menuitem value="Proveedor" outcome="Proveedor" icon="pi pi-users"/>
+                    </p:submenu>
+
+                    <p:submenu label="Acciones" icon="pi pi-sliders-h">
+                        <p:menuitem value="Listado de Venta" outcome="ListarVenta" update="messages" icon="pi pi-refresh"/>
+                        <p:menuitem value="Ventas" outcome="Venta" update="messages" icon="pi pi-refresh"/>
+                    </p:submenu>
+
+                    <p:submenu label="Carta" icon="pi pi-tags">
+                        <p:menuitem value="Platillo" outcome="Platillo" update="messages" icon="pi pi-refresh"/>
+                    </p:submenu>
+
+                    <p:divider layout="vertical"/>
+
+                    <f:facet name="options">
+                        <p:button value="Cerrar Sesion" outcome="Intro" icon="pi pi-fw pi-sign-out" style="border-radius: 60px" styleClass="ui-button-info"/>
+                    </f:facet>
+                </p:menubar>
+            </h:form>
+        </div>
+
+        <!--Menu de las capas-->
+
+        <!-- Botón nuevo -->
+
+        <h:form>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton icon="pi pi-users"
+                                     style="margin-bottom: 0.5px; margin-top: 0.5px"
+                                     value="Nuevo Registro"
+                                     update=":RegUsu" oncomplete="PF('wdlgRegistro').show()"
+                                     styleClass="ui-button-raised ui-button-danger ui-button-flat">
+                        <p:resetInput target=":RegUsu"/>
+                    </p:commandButton>
+                </p:toolbarGroup>
+            </p:toolbar>
+        </h:form>
+
+        <center>    
+            <p:growl showDetail="true" id="messages" >
+                <p:autoUpdate/> 
+            </p:growl>
+
+            <!-- Botón nuevo -->
+
+            <!--        Formulario del Usuario    >--> 
+            <p:dialog header="REGISTRAR:" widgetVar="wdlgRegistro" id="dlgRegistro">
+                <h:form id="RegUsu" style="width: 100%"> 
+
+                    <div class="p-grid ui-fluid" style="width: 300px; margin-top: 10px; margin-bottom: 10px; margin-right: 2px">
+                        <div class="p-col-12 p-md-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-ticket"></i></div>
+                                <p:inputText id="nombrePlatillo" placeholder="Nombre del Platillo" value="#{PlatilloC.platillo.nombrePlatillo}" required="true"/>
+                                <p:keyFilter regEx="/[A-Z_a-z_ñ_á_é_í_ó_ú_ ]/"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-grid ui-fluid" style="width: 300px; margin-top: 10px; margin-bottom: 10px; margin-right: 2px">
+                        <div class="p-col-12 p-md-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
+                                <p:inputTextarea rows="6" cols="33" id="descripcionPlatillo"
+                                                 placeholder="Descripción del Platillo:"
+                                                 value="#{PlatilloC.platillo.descripcionPlatillo}"
+                                                 required="true" />
+                                <p:keyFilter regEx="/[A-Z_a-z_ñ_á_é_í_ó_ú_ ]/"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-grid ui-fluid" style="width: 300px; margin-top: 10px; margin-bottom: 10px; margin-right: 2px">
+                        <div class="p-col-12 p-md-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
+                                <p:inputText id="precioPlatillo" placeholder="Precio:" value="#{PlatilloC.platillo.precioPlatillo}" required="true"/>
+                                <p:keyFilter regEx="/[0-9]/" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-grid ui-fluid" style="width: 300px; margin-top: 10px; margin-bottom: 10px; margin-right: 2px">
+                        <div class="p-col-12 p-md-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
+                                <p:inputText id="stockPlatillo" placeholder="Disponibilidad:" value="#{PlatilloC.platillo.stockPlatillo}" required="true"/>
+                                <p:keyFilter regEx="/[0-9]/" />
+                            </div>
+                        </div>
+                    </div>
+                    <p:commandButton id="btnRegistrar" value="Registrar" actionListener="#{PlatilloC.registrar()}"
+                                     update="RegUsu :frmTablaUsu:tablaUsu"
+                                     style="margin-right: 5px; margin-top: 10px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px;"
+                                     oncomplete="if(!args.validationFailed)PF('wdlgRegistro').hide();">
+                        <p:confirm header="Confirmación" message="¿Deseas Registar?" icon="ui-icon-alert"/>
+                        <p:resetInput target="RegUsu"/>
+                    </p:commandButton>                 
+                    <p:commandButton style="margin-right: 5px; margin-top: 10px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px;"
+                                     value="Cancelar" immediate="true" oncomplete="PF('wdlgRegistro').hide();" />
+                    <p:commandButton id="btnLimpiar" value="Limpiar" actionListener="#{PlatilloC.limpiar()}"
+                                     update="RegUsu"
+                                     style="margin-right: 5px; margin-top: 10px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px;"
+                                     oncomplete="if(!args.validationFailed)PF('wdlgRegistro');">
+                    </p:commandButton> 
+                </h:form>
+            </p:dialog> 
+            <!--        Fin del Formulario Usuario    >-->
+
+
+
+            <p:spacer height="0"/>        
+            <!--        Listado del Usuario    >-->              
+            <h:form id="frmTablaUsu">
+                <p:dataTable id="tablaUsu" var="lista" value="#{PlatilloC.listadopla}" 
+                             rows="10"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                             rowsPerPageTemplate="10,15,20"
+                             emptyMessage="La lista esta sin datos para mostrar, agregue datos porfavor."
+                             selection="#{PlatilloC.platillo}" rowKey="#{lista.codigoPlatillo}"
+                             selectionMode="single" resizableColumns="true"
+                             >   
+                    <f:facet name="header">
+
+                        <!-- Encabezados de la lista -->
+                        <center>
+                            <h1 id="ListadoDePlatillos">Lista de Platillos</h1>
+                        </center>
+                        <!-- Encabezados de la lista -->
+
+                        <!-- Filtrado por Activo e Inactivo -->
+                        <div>
+                            <h:form>
+                                <center>
+                                    <p:outputLabel value="Filtrar por: " style="align-content: center; alignment-adjust: central;"/>
+                                    <p:selectOneMenu value="#{PlatilloC.tipo}" style="width: 100px">
+                                        <f:selectItem itemValue="1" itemLabel="Activos"/> 
+                                        <f:selectItem itemValue="2" itemLabel="Inactivos"/>
+                                        <f:selectItem itemValue="3" itemLabel="Todos"/>
+                                        <p:ajax listener="#{PlatilloC.listar()}" update=":frmTablaUsu:tablaUsu"/>
+                                    </p:selectOneMenu>
+                                </center>
+                            </h:form>
+                        </div>
+                        <!-- Filtrado por Activo e Inactivo -->
+
+                        <!-- Botón de Reporte -->
+                        <center>
+                            <p:commandButton value="Exportar XLS" icon="pi pi-file-excel"
+                                             style="margin: 5px; margin-top:10px; background-color: #ff0000; border-color:#ff0000; border-radius: 60px"
+                                             ajax="false">
+                                <p:dataExporter type="xls" target="tablaUsu" fileName="Platillos Generales" />
+                            </p:commandButton>
+                            <p:commandButton value="Reporte Platillos" onclick="this.form.target = '_blank'"
+                                             style="margin: 5px;margin-top:10px;background-color: #ff0000; border-color:#ff0000; border-radius: 60px"
+                                             icon="pi pi-file-pdf" ajax="false"
+                                             title="Platillos Generales" actionListener="#{PlatilloC.ReportePDF}"/>
+                        </center>
+                        <!-- Botón de Reporte -->
+
+                    </f:facet>
+                    <p:column headerText="NOMBRE:" filterBy="#{lista.nombrePlatillo}" style="text-align: center; font-size: 15px; width: 200px">
+                        <h:outputText value="#{lista.nombrePlatillo}" />
+                    </p:column>
+                    <p:column headerText="DESCRIPCIÓN:" style="text-align: center;">
+                        <h:outputText value="#{lista.descripcionPlatillo}" />
+                    </p:column>
+                    <p:column headerText="PRECIO:" style="text-align: center; width: 150px">
+                        <h:outputText value="#{lista.precioPlatillo}"/>
+                    </p:column>
+                    <p:column headerText="STOCK:" style="text-align: center; width: 150px">
+                        <h:outputText value="#{lista.stockPlatillo}" />
+                    </p:column>
+
+                    <center>
+                        <f:facet name="footer">
+                            EN TOTAL HAY #{fn:length(PlatilloC.listadopla)} REGISTROS EN ESTE APARTADO.
+                        </f:facet>
+                    </center>
+                </p:dataTable> 
+
+                <p:contextMenu for="tablaUsu">
+                    <p:menuitem value="Modificar" oncomplete="PF('wdlgDatos').show()" update="frmModificar"/>
+                    <p:menuitem value="Eliminar"  actionListener="#{PlatilloC.eliminarA()}" update="tablaUsu">
+                        <p:confirm header="confirmacion" icon="pi pi-search" message="¿Deseas Eliminar?"/>
+                    </p:menuitem>
+                    <p:menuitem value="Restaurar" icon="=pi pi-search" actionListener="#{PlatilloC.restaurar()}" update="tablaUsu">
+                        <p:confirm header="Confirmación" message="¿Deseas restaurar?" icon="pi pi-search"/>
+                    </p:menuitem>
+                </p:contextMenu>
+
+            </h:form>
+            <!--        Fin del Listado Usuario    >-->  
+
+
+            <!--        Dialogo del Usuario    >-->
+            <p:dialog header="Datos del Usuario" widgetVar="wdlgDatos" id="dlgDatos">
+                <h:form id="frmModificar">
+                    <div class="p-grid ui-fluid" style="width: 300px; margin-top: 10px; margin-bottom: 10px; margin-right: 2px">
+                        <div class="p-col-12 p-md-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-ticket"></i></div>
+                                <p:inputText id="nombrePlatillo" placeholder="Nombre del Platillo" value="#{PlatilloC.platillo.nombrePlatillo}" required="true"/>
+                                <p:keyFilter regEx="/[A-Z_a-z_ñ_á_é_í_ó_ú_ ]/"/>
+                                <p:tooltip for="nombrePlatillo" value="Complete el campo" showEffect="clip" hideEffect="fold" position="top"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-grid ui-fluid" style="width: 300px; margin-top: 10px; margin-bottom: 10px; margin-right: 2px">
+                        <div class="p-col-12 p-md-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
+                                <p:inputText id="descripcionPlatillo" placeholder="Descripción del Platillo:" value="#{PlatilloC.platillo.descripcionPlatillo}" required="true"/>
+                                <p:keyFilter regEx="/[A-Z_a-z_ñ_á_é_í_ó_ú_ ]/"/>
+                                <p:tooltip for="descripcionPlatillo" value="Complete el campo" showEffect="clip" hideEffect="fold" position="top"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-grid ui-fluid" style="width: 300px; margin-top: 10px; margin-bottom: 10px; margin-right: 2px">
+                        <div class="p-col-12 p-md-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
+                                <p:inputText id="precioPlatillo" placeholder="Precio:" value="#{PlatilloC.platillo.precioPlatillo}" required="true"/>
+                                <p:keyFilter regEx="/[A-Z_a-z_ñ_á_é_í_ó_ú_ ]/"/>
+                                <p:tooltip for="precioPlatillo" value="Complete el campo" showEffect="clip" hideEffect="fold" position="top"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-grid ui-fluid" style="width: 300px; margin-top: 10px; margin-bottom: 10px; margin-right: 2px">
+                        <div class="p-col-12 p-md-4">
+                            <div class="ui-inputgroup">
+                                <div class="ui-inputgroup-addon"><i class="pi pi-file-o"></i></div>
+                                <p:inputText id="stockPlatillo" placeholder="Disponibilidad:" value="#{PlatilloC.platillo.stockPlatillo}" required="true"/>
+                                <p:keyFilter regEx="/[A-Z_a-z_ñ_á_é_í_ó_ú_ ]/"/>
+                                <p:tooltip for="stockPlatillo" value="Complete el campo" showEffect="clip" hideEffect="fold" position="top"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <p:commandButton id="btnModificar" value="Modificar" actionListener="#{PlatilloC.modificar()}" 
+                                     update="frmModificar :frmTablaUsu:tablaUsu"
+                                     style="margin-right: 5px; margin-top: 10px; margin-bottom: -15px"
+                                     oncomplete="if(!args.validationFailed)PF('wdlgDatos').hide();">
+                        <p:confirm header="Confirmación" message="¿Deseas Modificar?" icon="ui-icon-alert"/>
+                        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                            <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                        </p:confirmDialog>
+                    </p:commandButton>  
+                    <p:commandButton style="margin-right: 5px; margin-top: 10px; margin-bottom: -15px"
+                                     value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();" />
+                </h:form>
+            </p:dialog>
+            <!--        Fin del Dialogo del Usuario    >-->
+        </center>
+    </h:body>
+    <h:outputScript library="js" name="..//resources/js/spanishLocales.js"/>
+</html>

@@ -1,0 +1,308 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      lang="en">
+    <link rel="stylesheet" type="text/css" href="../style/DiseñoPlatillo.css"/>
+    <h:head>
+        <title>SkyFood - Sistema de Ventas</title>
+    </h:head>
+    <h:body>
+
+        <!--Menu de las capas-->
+
+        <div class="card">
+            <h:form style="margin-bottom: 15px">
+                <p:growl id="messages"/>
+
+                <p:menubar>
+                    <p:submenu label="Personas" icon="pi pi-users">
+                        <p:menuitem value="Empleado" outcome="Empleado" icon="pi pi-shopping-cart"/>
+                        <p:menuitem value="Cliente" outcome="Cliente" icon="pi pi-chart-line"/>
+                        <p:menuitem value="Proveedor" outcome="Proveedor" icon="pi pi-users"/>
+                    </p:submenu>
+
+                    <p:submenu label="Acciones" icon="pi pi-sliders-h">
+                        <p:menuitem value="Listado de Venta" outcome="ListarVenta" update="messages" icon="pi pi-refresh"/>
+                        <p:menuitem value="Ventas" outcome="Venta" update="messages" icon="pi pi-refresh"/>
+                    </p:submenu>
+
+                    <p:submenu label="Carta" icon="pi pi-tags">
+                        <p:menuitem value="Platillo" outcome="Platillo" update="messages" icon="pi pi-refresh"/>
+                    </p:submenu>
+
+                    <p:divider layout="vertical"/>
+
+                    <f:facet name="options">
+                        <p:button value="Cerrar Sesion" outcome="Intro" icon="pi pi-fw pi-sign-out" style="border-radius: 60px" styleClass="ui-button-info"/>
+                    </f:facet>
+                </p:menubar>
+            </h:form>
+        </div>
+
+        <!--Menu de las capas-->
+
+        <!-- Botón nuevo -->
+
+        <h:form>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton icon="pi pi-users"
+                                     style="margin-bottom: 0.5px; margin-top: 0.5px"
+                                     value="Nuevo Registro"
+                                     update=":RegUsu" oncomplete="PF('wdlgRegistro').show()"
+                                     styleClass="ui-button-raised ui-button-danger ui-button-flat">
+                        <p:resetInput target=":RegUsu"/>
+                    </p:commandButton>
+                </p:toolbarGroup>
+            </p:toolbar>
+        </h:form>
+
+        <center>    
+            <p:growl showDetail="true" id="messages" >
+                <p:autoUpdate/> 
+            </p:growl>
+
+            <!-- Botón nuevo -->
+
+            <!--        Formulario del Usuario    >--> 
+            <p:dialog header="REGISTRAR:" widgetVar="wdlgRegistro" id="dlgRegistro">
+                <h:form id="RegUsu" style="width: 100%"> 
+
+                    <p:panelGrid columns="3" >
+
+                        <p:outputLabel value ="RUC:"/>
+                        <p:commandButton value="Buscar" actionListener="#{ProveedorC.BuscadorRucProveedor}" update="Nombre Dirección Ubi"
+                                         icon="pi pi-search" style="font-weight:bold; font-size:16px; margin-left: 10px; border-radius: 60px">
+                            <p:inputText id="RucProveedor"  value="#{ProveedorC.pro.rucProveedor}" onkeyup="validarEmpleado" maxlength="11"
+                                         placeholder="Registro Único de Contribuyente" required="true" requiredMessage="Ingrese el RUC">
+                                <p:keyFilter regEx="/[0-9]/"/> 
+                                <p:ajax update="msgRuc" event="keyup" delay="800"/>                            
+                            </p:inputText>    
+                        </p:commandButton>                  
+                        <p:message id="msgRuc" for="RucProveedor"/>  
+
+
+                        <p:outputLabel value="Nombre:" for ="Nombre" />                    
+                        <p:inputText value="#{ProveedorC.pro.razonSocialProveedor}"  disabled="#{EmpleadoC.disabled}"  
+                                     id ="Nombre" requiredMessage="Ingrese el Nombre del Cliente">
+                            <p:keyFilter regEx="/[a-zA-Z_ñ_á_é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgNom" event="keyup" delay="800"/>
+                        </p:inputText>
+
+                        <p:message id="msgNom" for="Nombre"/>    
+
+                        <p:outputLabel value="Producto:" for="Apellido" />
+                        <p:inputText value="#{ProveedorC.pro.productoVender}"
+                                     requiredMessage="Ingrese el Apellido del Cliente"  id ="Apellido">   
+                            <p:keyFilter regEx="/[a-zA-Z_ñ_á_é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgApe" event="keyup"  delay="800"/>
+                        </p:inputText> 
+                        <p:message id="msgApe" for="Apellido"/>  
+
+                        <p:outputLabel value="Correo:" for="Correo"/>
+                        <p:inputText  value="#{ProveedorC.pro.correoProveedor}" id="Correo" requiredMessage="Ingrese correo electronico del empleado" >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_._é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgCor" event="keyup"  delay="800"/>
+                        </p:inputText>  
+                        <p:message id="msgCor" for="Correo"/>  
+
+                        <p:outputLabel value="Celular:" for="Celular"/>
+                        <p:inputText  value="#{ProveedorC.pro.celularProveedor}" maxlength="9" id ="Celular"  requiredMessage="Ingrese el celular del empleado"  >
+                            <p:keyFilter regEx="/[0-9]/" />
+                            <p:ajax update="msgCel" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgCel" for="Celular"/>
+
+                        <p:outputLabel value="Dirección:" for="Dirección"/>
+                        <p:inputText  value="#{ProveedorC.pro.direccionProveedor}" id ="Dirección" disabled="#{ProveedorC.disabled}" requiredMessage="Ingrese la direccion del domicilio"  >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_é_i_ó_ú/, _._]/" />
+                            <p:ajax update="msgDir" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgDir" for="Dirección"/>
+
+                        <p:outputLabel value="Ubicación:" for="Ubi"/>
+                        <p:inputText  value="#{ProveedorC.pro.codigoUbigeo}" id ="Ubi" disabled="#{ProveedorC.disabled}" requiredMessage="Ingrese el turno de trabajo"  >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_é_i_ó_ú/, _._]/" />
+                            <p:ajax update="msgUbi" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgUbi" for="Ubi"/>
+
+                        <p:commandButton id="btnRegistrar" value="Registrar" actionListener="#{ProveedorC.registrar()}"
+                                         update="RegUsu :frmTablaUsu:tablaUsu"
+                                         style="margin-right: 5px; margin-top: -20px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                         oncomplete="if(!args.validationFailed)PF('wdlgRegistro').hide();">
+                            <p:confirm header="Confirmación" message="¿Deseas Registar?" icon="ui-icon-alert"/>
+                            <p:resetInput target="RegUsu"/>
+                        </p:commandButton>                 
+                        <p:commandButton style="margin-right: 5px; margin-top: -20px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                         value="Cancelar" immediate="true" oncomplete="PF('wdlgRegistro').hide();" />
+                        <p:commandButton id="btnLimpiar" value="Limpiar" actionListener="#{ProveedorC.limpiar()}"
+                                         update="RegUsu"
+                                         style="margin-right: 5px; margin-top: -20px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                         oncomplete="if(!args.validationFailed)PF('wdlgRegistro');">
+                        </p:commandButton> 
+                    </p:panelGrid>  
+                </h:form>
+            </p:dialog> 
+            <!--        Fin del Formulario Usuario    >-->
+
+            <p:spacer height="0"/>        
+            <!--        Listado del Usuario    >-->              
+            <h:form id="frmTablaUsu">
+                <p:dataTable id="tablaUsu" var="lista" value="#{ProveedorC.listadoprov}" 
+                             rows="10"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                             rowsPerPageTemplate="10,15,20"
+                             emptyMessage="La lista esta sin datos para mostrar, agregue datos porfavor."
+                             selection="#{ProveedorC.pro}" rowKey="#{lista.codigoProveedor}"
+                             selectionMode="single" resizableColumns="true"
+                             >   
+                    <f:facet name="header">
+
+                        <!-- Encabezados de la lista -->
+                        <center>
+                            <h1 id="ListadoDePlatillos">Lista de Proveedores</h1>
+                        </center>
+                        <!-- Encabezados de la lista -->
+
+                        <!-- Filtrado por Activo e Inactivo -->
+                        <div>
+                            <h:form>
+                                <center>
+                                    <p:outputLabel value="Filtrar por: " style="align-content: center; alignment-adjust: central;"/>
+                                    <p:selectOneMenu value="#{ProveedorC.tipo}" style="width: 100px">
+                                        <f:selectItem itemValue="1" itemLabel="Activos"/> 
+                                        <f:selectItem itemValue="2" itemLabel="Inactivos"/>
+                                        <f:selectItem itemValue="3" itemLabel="Todos"/>
+                                        <p:ajax listener="#{ProveedorC.listar()}" update=":frmTablaUsu:tablaUsu"/>
+                                    </p:selectOneMenu>
+                                </center>
+                            </h:form>
+                        </div>
+                        <!-- Filtrado por Activo e Inactivo -->
+
+                        <!-- Botón de Reporte -->
+                        <center>
+                            <p:commandButton value="Exportar XLS" icon="pi pi-file-excel"
+                                             style="margin: 5px; margin-top:10px; background-color: #ff0000; border-color:#ff0000; border-radius: 60px"
+                                             ajax="false">
+                                <p:dataExporter type="xls" target="tablaUsu" fileName="Proveedores Generales" />
+                            </p:commandButton>
+                            <p:commandButton value="Reporte Proveedores" onclick="this.form.target = '_blank'"
+                                             style="margin: 5px;margin-top:10px;background-color: #ff0000; border-color:#ff0000; border-radius: 60px"
+                                             icon="pi pi-file-pdf" ajax="false"
+                                             title="Proveedores Generales" actionListener="#{ProveedorC.ReportePDF}"/>
+                        </center>
+                        <!-- Botón de Reporte -->
+
+                    </f:facet>
+                    <p:column headerText="RAZÓN SOCIAL:" filterBy="#{lista.razonSocialProveedor}" style="text-align: center; font-size: 12px; width: 120px">
+                        <h:outputText value="#{lista.razonSocialProveedor}" />
+                    </p:column>
+                    <p:column headerText="RUC:" filterBy="#{lista.rucProveedor}" style="text-align: center; width: 50px; font-size: 12px;">
+                        <h:outputText value="#{lista.rucProveedor}" />
+                    </p:column>
+                    <p:column headerText="PRODUCTO:" style="text-align: center; width: 50px; font-size: 12px;">
+                        <h:outputText value="#{lista.productoVender}" />
+                    </p:column>
+                    <p:column headerText="EMAIL:" style="text-align: center; width: 200px; font-size: 12px;">
+                        <h:outputText value="#{lista.correoProveedor}"/>
+                    </p:column>
+                    <p:column headerText="CELULAR:" style="text-align: center; width: 50px; font-size: 12px;">
+                        <h:outputText value="#{lista.celularProveedor}" />
+                    </p:column>
+                    <p:column headerText="UBICACION:" style="text-align: center; font-size: 12px; width: 70px">
+                        <h:outputText value="#{lista.codigoUbigeo}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="DEPARTAMENTO:" style="text-align: center; font-size: 12px; width: 75px">
+                        <h:outputText value="#{lista.departamento}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="PROVINCIA:" style="text-align: center; font-size: 12px; width: 70px">
+                        <h:outputText value="#{lista.provincia}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="DISTRITO:" style="text-align: center; font-size: 12px; width: 140px">
+                        <h:outputText value="#{lista.distrito}">
+                        </h:outputText>
+                    </p:column>
+                    <p:column headerText="DIRECCIÓN:" style="text-align: center; width: 295px; font-size: 12px;">
+                        <h:outputText value="#{lista.direccionProveedor}" />
+                    </p:column>
+                    <center>
+                        <f:facet name="footer">
+                            EN TOTAL HAY #{fn:length(ProveedorC.listadoprov)} REGISTROS EN ESTE APARTADO.
+                        </f:facet>
+                    </center>
+                </p:dataTable> 
+
+                <p:contextMenu for="tablaUsu">
+                    <p:menuitem value="Modificar" oncomplete="PF('wdlgDatos').show()" update="frmModificar"/>
+                    <p:menuitem value="Eliminar" icon="pi pi-exclamation-triangle" actionListener="#{ProveedorC.eliminarA()}" update="tablaUsu">
+                        <p:confirm header="Confirmación" icon="pi pi-exclamation-triangle" message="¿Deseas Eliminar?"/>
+                    </p:menuitem>
+                    <p:menuitem value="Restaurar" icon="pi pi-search" actionListener="#{ProveedorC.restaurar()}" update="tablaUsu">
+                        <p:confirm header="Confirmación" message="¿Deseas restaurar?" icon="pi pi-search"/>
+                    </p:menuitem>
+                </p:contextMenu>
+
+            </h:form>
+            <!--        Fin del Listado Usuario    >-->  
+
+
+            <!--        Dialogo del Usuario    >-->
+            <p:dialog header="Datos del Proveedor: " widgetVar="wdlgDatos" id="dlgDatos">
+                <h:form id="frmModificar">
+
+                    <p:panelGrid columns="3" >
+
+                        <p:outputLabel value="Producto:" for="Apellido" />
+                        <p:inputText value="#{ProveedorC.pro.productoVender}"
+                                     requiredMessage="Ingrese el Apellido del Cliente"  id ="Apellido">   
+                            <p:keyFilter regEx="/[a-zA-Z_ñ_á_é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgApe" event="keyup"  delay="800"/>
+                        </p:inputText> 
+                        <p:message id="msgApe" for="Apellido"/>  
+
+                        <p:outputLabel value="Correo:" for="Correo"/>
+                        <p:inputText  value="#{ProveedorC.pro.correoProveedor}" id="Correo" requiredMessage="Ingrese correo electronico del empleado" >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_._é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgCor" event="keyup"  delay="800"/>
+                        </p:inputText>  
+                        <p:message id="msgCor" for="Correo"/>  
+
+                        <p:outputLabel value="Celular:" for="Celular"/>
+                        <p:inputText  value="#{ProveedorC.pro.celularProveedor}" maxlength="9" id ="Celular"  requiredMessage="Ingrese el celular del empleado"  >
+                            <p:keyFilter regEx="/[0-9]/" />
+                            <p:ajax update="msgCel" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgCel" for="Celular"/>
+
+                        <p:commandButton id="btnModificar" value="Modificar" actionListener="#{ProveedorC.modificar()}" 
+                                         update="frmModificar :frmTablaUsu:tablaUsu"
+                                         style="margin-right: 5px; margin-top: 10px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                         oncomplete="if(!args.validationFailed)PF('wdlgDatos').hide();">
+                            <p:confirm header="Confirmación" message="¿Deseas Modificar?" icon="ui-icon-alert"/>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                            </p:confirmDialog>
+                        </p:commandButton>  
+                        <p:commandButton style="margin-right: 5px; margin-top: 10px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                         value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();" />
+                    </p:panelGrid>  
+                </h:form>
+            </p:dialog>
+            <!--        Fin del Dialogo del Usuario    >-->
+        </center>
+    </h:body>
+    <h:outputScript library="js" name="..//resources/js/spanishLocales.js"/>
+</html>

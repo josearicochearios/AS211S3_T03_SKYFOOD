@@ -1,0 +1,349 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      lang="en">
+    <h:head>
+        <title>SkyFood - Sistema de Ventas</title>
+        <link rel="stylesheet" type="text/css" href="../style/DiseñoEmpleado.css"/>
+    </h:head>
+    <h:body>
+
+        <div class="card">
+            <h:form style="margin-bottom: 15px">
+                <p:growl id="messages"/>
+
+                <p:menubar>
+                    <p:submenu label="Personas" icon="pi pi-users">
+                        <p:menuitem value="Empleado" outcome="Empleado" icon="pi pi-shopping-cart"/>
+                        <p:menuitem value="Cliente" outcome="Cliente" icon="pi pi-chart-line"/>
+                        <p:menuitem value="Proveedor" outcome="Proveedor" icon="pi pi-users"/>
+                    </p:submenu>
+
+                    <p:submenu label="Acciones" icon="pi pi-sliders-h">
+                        <p:menuitem value="Listado de Venta" outcome="ListarVenta" update="messages" icon="pi pi-refresh"/>
+                        <p:menuitem value="Ventas" outcome="Venta" update="messages" icon="pi pi-refresh"/>
+                    </p:submenu>
+
+                    <p:submenu label="Carta" icon="pi pi-tags">
+                        <p:menuitem value="Platillo" outcome="Platillo" update="messages" icon="pi pi-refresh"/>
+                    </p:submenu>
+
+                    <p:divider layout="vertical"/>
+
+                    <!--<p:menuitem value="Quit" icon="pi pi-fw pi-power-off"/>-->
+
+                    <f:facet name="options">
+                        <p:button value="Cerrar Sesion" outcome="Intro" icon="pi pi-fw pi-sign-out" style="border-radius: 60px" styleClass="ui-button-info"/>
+                    </f:facet>
+                </p:menubar>
+            </h:form>
+        </div>
+
+        <!--Menu de las capas-->
+
+        <!-- Botón nuevo -->
+        <h:form>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton icon="pi pi-users"
+                                     style="margin-bottom: 0.5px; margin-top: 0.5px"
+                                     value="Nuevo Registro"
+                                     update=":RegUsu" oncomplete="PF('wdlgRegistro').show()"
+                                     styleClass="ui-button-raised ui-button-danger ui-button-flat">
+                        <p:resetInput target=":RegUsu"/>
+                    </p:commandButton>
+                </p:toolbarGroup>
+            </p:toolbar>
+        </h:form>
+
+        <center>    
+            <p:growl showDetail="true" id="messages" >
+                <p:autoUpdate/> 
+            </p:growl>
+            <!-- Botón nuevo -->
+
+            <!--        Formulario del Empleado    >--> 
+            <p:dialog header="REGISTRAR:" widgetVar="wdlgRegistro" id="dlgRegistro">
+                <h:form id="RegUsu" style="width: 100%"> 
+
+                    <p:panelGrid columns="3" >
+
+                        <p:outputLabel value ="DNI:"/>
+                        <p:commandButton value="Buscar" actionListener="#{EmpleadoC.BuscadorDniEmpleado}" update="Nombre Apellido"
+                                         icon="pi pi-search" style="font-weight:bold; font-size:16px; margin-left: 10px; border-radius: 60px">
+                            <p:inputText id="DniEmp"  value="#{EmpleadoC.emp.dniEmpleado}" onkeyup="validarEmpleado" maxlength="8"
+                                         placeholder="Documento de Identidad" required="true" requiredMessage="Ingrese el DNI">
+                                <p:keyFilter regEx="/[0-9]/"/> 
+                                <p:ajax update="msgDniEmp" event="keyup" delay="800"/>                            
+                            </p:inputText>    
+                        </p:commandButton>                  
+                        <p:message id="msgDniEmp" for="DniEmp"/>  
+
+
+                        <p:outputLabel value="Nombre:" for ="Nombre" />                    
+                        <p:inputText value="#{EmpleadoC.emp.nombreEmpleado}"  disabled="#{EmpleadoC.disabled}"  
+                                     id ="Nombre" requiredMessage="Ingrese el Nombre del Cliente">
+                            <p:keyFilter regEx="/[a-zA-Z_ñ_á_é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgNom" event="keyup" delay="800"/>
+                        </p:inputText>
+
+                        <p:message id="msgNom" for="Nombre"/>    
+
+                        <p:outputLabel value="Apellido:" for="Apellido" />
+                        <p:inputText value="#{EmpleadoC.emp.apellidoEmpleado}" disabled="#{EmpleadoC.disabled}"
+                                     requiredMessage="Ingrese el Apellido del Cliente"  id ="Apellido">   
+                            <p:keyFilter regEx="/[a-zA-Z_ñ_á_é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgApe" event="keyup"  delay="800"/>
+                        </p:inputText> 
+                        <p:message id="msgApe" for="Apellido"/>  
+
+                        <p:outputLabel value="Correo:" for="Correo"/>
+                        <p:inputText  value="#{EmpleadoC.emp.correoEmpleado}" id="Correo" requiredMessage="Ingrese correo electronico del empleado" >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_._é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgCor" event="keyup"  delay="800"/>
+                        </p:inputText>  
+                        <p:message id="msgCor" for="Correo"/>  
+
+                        <p:outputLabel value="Celular:" for="Celular"/>
+                        <p:inputText  value="#{EmpleadoC.emp.celularEmpleado}" maxlength="9" id ="Celular"  requiredMessage="Ingrese el celular del empleado"  >
+                            <p:keyFilter regEx="/[0-9]/" />
+                            <p:ajax update="msgCel" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgCel" for="Celular"/>
+
+                        <p:outputLabel value="Dirección:" for="Dirección"/>
+                        <p:inputText  value="#{EmpleadoC.emp.direccionEmpleado}" id ="Dirección"  requiredMessage="Ingrese la direccion del domicilio"  >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_é_i_ó_ú/, _._]/" />
+                            <p:ajax update="msgDir" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgDir" for="Dirección"/>
+
+                        <p:outputLabel value="Turno:" for="Turno"/>
+                        <p:inputText  value="#{EmpleadoC.emp.turno}" id ="Turno"  requiredMessage="Ingrese el turno de trabajo"  >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_é_i_ó_ú/, _._]/" />
+                            <p:ajax update="msgTur" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgTur" for="Turno"/>
+
+                        <div class="p-grid ui-fluid" style="width: 380px; margin-top: 10px; margin-bottom: 10px">
+                            <div class="p-col-12 p-md-4">
+                                <div class="ui-inputgroup">
+                                    <label>Ubicación:</label>
+                                    <p:selectOneMenu id="txtUBICLI"
+                                                     value="#{EmpleadoC.emp.codigoUbigeo}" styleClass="ticket"
+                                                     autoWidth="true" required="true"
+                                                     requiredMessage="Seleccione la ubicación">
+                                        <f:selectItem noSelectionOption="true"
+                                                      itemLabel="Seleccione:" />
+                                        <f:selectItems value="#{EmpleadoC.listarUbig()}" var="ubi"
+                                                       itemValue="#{ubi.codigoUbigeo}"
+                                                       itemLabel="#{ubi.departamento} - #{ubi.provincia} - #{ubi.distrito}" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+                    </p:panelGrid>  
+                    
+                    <p:commandButton id="btnRegistrar" value="Registrar" actionListener="#{EmpleadoC.registrar()}"
+                                     update="RegUsu :frmTablaUsu:tablaUsu"
+                                     style="margin-right: 5px; margin-top: 10px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                     oncomplete="if(!args.validationFailed)PF('wdlgRegistro').hide();">
+                        <p:confirm header="Confirmación" message="¿Deseas Registar?" icon="ui-icon-alert"/>
+                        <p:resetInput target="RegUsu"/>
+                    </p:commandButton>                 
+                    <p:commandButton style="margin-left: 5px; margin-top: 10px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                     value="Cancelar" immediate="true" oncomplete="PF('wdlgRegistro').hide();" />
+                    <p:commandButton id="btnLimpiar" value="Limpiar" actionListener="#{EmpleadoC.limpiar()}"
+                                     update="RegUsu"
+                                     style="margin-left: 10px; margin-top: 10px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                     oncomplete="if(!args.validationFailed)PF('wdlgRegistro');">
+                    </p:commandButton>
+                </h:form>
+            </p:dialog> 
+            <!--        Fin del Formulario Empleado    >-->
+
+            <p:spacer height="0"/>        
+            <!--        Listado del Empleado    >-->              
+            <h:form id="frmTablaUsu">
+                <p:dataTable id="tablaUsu" var="lista" value="#{EmpleadoC.listadoEmp}" 
+                             rows="10"
+                             paginator="true"
+                             paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                             currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} registros"
+                             rowsPerPageTemplate="10,15,20"
+                             emptyMessage="La lista esta sin datos para mostrar, agregue datos porfavor."
+                             selection="#{EmpleadoC.emp}" rowKey="#{lista.codigoEmpleado}"
+                             selectionMode="single" resizableColumns="true"
+                             >   
+                    <f:facet name="header">
+
+                        <!-- Encabezados de la lista -->
+                        <center>
+                            <h1 id="ListadoDeEmpleados">Lista de Empleados</h1>
+                        </center>
+                        <!-- Encabezados de la lista -->
+
+                        <!-- Filtrado por Activo e Inactivo -->
+                        <div>
+                            <h:form>
+                                <center>
+                                    <p:outputLabel value="Filtrar por: " style="align-content: center; alignment-adjust: central;"/>
+                                    <p:selectOneMenu value="#{EmpleadoC.tipo}" style="width: 100px">
+                                        <f:selectItem itemValue="1" itemLabel="Activos"/> 
+                                        <f:selectItem itemValue="2" itemLabel="Inactivos"/>
+                                        <f:selectItem itemValue="3" itemLabel="Todos"/>
+                                        <p:ajax listener="#{EmpleadoC.listar()}" update=":frmTablaUsu:tablaUsu"/>
+                                    </p:selectOneMenu>
+                                </center>
+                            </h:form>
+                        </div>
+                        <!-- Filtrado por Activo e Inactivo -->
+
+                        <!-- Botón de Reporte -->
+                        <center>
+                            <p:commandButton value="Exportar XLS" icon="pi pi-file-excel"
+                                             style="margin: 5px; margin-top:10px; background-color: #ff0000; border-color:#ff0000; border-radius: 60px"
+                                             ajax="false">
+                                <p:dataExporter type="xls" target="tablaUsu" fileName="Empleados Generales" />
+                            </p:commandButton>
+                            <p:commandButton value="Reporte Empleados" onclick="this.form.target = '_blank'"
+                                             style="margin: 5px;margin-top:10px;background-color: #ff0000; border-color:#ff0000; border-radius: 60px"
+                                             icon="pi pi-file-pdf" ajax="false"
+                                             title="Empleados Generales" actionListener="#{EmpleadoC.ReportePDF}"/>
+                        </center>
+                        <!-- Botón de Reporte -->
+
+                    </f:facet>
+                    <div>
+                        <p:column headerText="NOMBRES:" style="text-align: center; font-size: 15px; width: 123px">
+                            <h:outputText value="#{lista.nombreEmpleado}" />
+                        </p:column>
+                        <p:column headerText="APELLIDOS:" style="text-align: center; font-size: 15px; width: 120px">
+                            <h:outputText value="#{lista.apellidoEmpleado}" />
+                        </p:column>
+                        <p:column headerText="DNI:"  filterBy="#{lista.dniEmpleado}" style="text-align: center; font-size: 15px; width: 70px" >
+                            <h:outputText value="#{lista.dniEmpleado}" />
+                        </p:column>
+                        <p:column headerText="CORREO:" style="text-align: center; font-size: 15px; width: 240px">
+                            <h:outputText value="#{lista.correoEmpleado}" />
+                        </p:column> 
+                        <p:column headerText="CELULAR:" style="text-align: center; font-size: 15px; width: 60px">
+                            <h:outputText value="#{lista.celularEmpleado}" />
+                        </p:column>
+                        <p:column headerText="UBICACION:" style="text-align: center; font-size: 15px; width: 70px">
+                            <h:outputText value="#{lista.codigoUbigeo}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="DEPARTAMENTO:" style="text-align: center; font-size: 15px; width: 120px">
+                            <h:outputText value="#{lista.departamento}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="PROVINCIA:" style="text-align: center; font-size: 15px; width: 70px">
+                            <h:outputText value="#{lista.provincia}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="DISTRITO:" style="text-align: center; font-size: 15px; width: 100px">
+                            <h:outputText value="#{lista.distrito}">
+                            </h:outputText>
+                        </p:column>
+                        <p:column headerText="DIRECCIÓN:" style="text-align: center; font-size: 15px">
+                            <h:outputText value="#{lista.direccionEmpleado}" />
+                        </p:column>
+                        <p:column headerText="TURNO:" style="text-align: center; font-size: 15px; width: 60px">
+                            <h:outputText value="#{lista.turno}" >
+                                <f:converter converterId="TurnoConverter" />
+                            </h:outputText>
+                        </p:column>
+                    </div>
+
+                    <center>
+                        <f:facet name="footer">
+                            <h5 style="margin-bottom: 0.5px; margin-top: 0.5px">EN TOTAL HAY #{fn:length(EmpleadoC.listadoEmp)} REGISTROS EN ESTE APARTADO.</h5>
+                        </f:facet>
+                    </center>
+                </p:dataTable> 
+
+                <p:contextMenu for="tablaUsu">
+                    <p:menuitem value="Modificar" oncomplete="PF('wdlgDatos').show()" update="frmModificar"/>
+                    <p:menuitem value="Eliminar"  icon="pi pi-exclamation-triangle" actionListener="#{EmpleadoC.eliminarA()}" update="tablaUsu">
+                        <p:confirm header="Confirmación" icon="pi pi-exclamation-triangle" message="¿Deseas Eliminar?"/>
+                    </p:menuitem>
+                    <p:menuitem value="Restaurar" icon="pi pi-refresh" actionListener="#{EmpleadoC.restaurar()}" update="tablaUsu">
+                        <p:confirm header="Confirmación" message="¿Deseas restaurar?" icon="pi pi-refresh"/>
+                    </p:menuitem>
+                </p:contextMenu>
+
+            </h:form>
+            <!--        Fin del Listado Empleado    >-->  
+
+
+            <!--        Dialogo del Empleado    >-->
+            <p:dialog header="Datos del Empleado: " widgetVar="wdlgDatos" id="dlgDatos">
+                <h:form id="frmModificar">
+
+                    <p:panelGrid columns="3" >
+
+                        <p:outputLabel value="Correo:" for="Correo"/>
+                        <p:inputText  value="#{EmpleadoC.emp.correoEmpleado}" id="Correo" requiredMessage="Ingrese correo electronico del empleado" >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_._é_i_ó_ú/, ]/" />
+                            <p:ajax update="msgCor" event="keyup"  delay="800"/>
+                        </p:inputText>  
+                        <p:message id="msgCor" for="Correo"/>  
+
+                        <p:outputLabel value="Celular:" for="Celular"/>
+                        <p:inputText  value="#{EmpleadoC.emp.celularEmpleado}" maxlength="9" id ="Celular"  requiredMessage="Ingrese el celular del empleado"  >
+                            <p:keyFilter regEx="/[0-9]/" />
+                            <p:ajax update="msgCel" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgCel" for="Celular"/>
+
+                        <p:outputLabel value="Dirección:" for="Dirección"/>
+                        <p:inputText  value="#{EmpleadoC.emp.direccionEmpleado}" id ="Dirección"  requiredMessage="Ingrese la direccion del domicilio"  >
+                            <p:keyFilter regEx="/[0-9_a-zA-Z_ñ_@_á_é_i_ó_ú/, _._]/" />
+                            <p:ajax update="msgDir" event="keyup"  delay="800"/>
+                        </p:inputText>
+                        <p:message id="msgDir" for="Dirección"/>
+
+                        <div class="p-grid ui-fluid" style="width: 380px; margin-top: 10px; margin-bottom: 10px">
+                            <div class="p-col-12 p-md-4">
+                                <div class="ui-inputgroup">
+                                    <label>Ubicación:</label>
+                                    <p:selectOneMenu id="txtUBICLI"
+                                                     value="#{EmpleadoC.emp.codigoUbigeo}" styleClass="ticket"
+                                                     autoWidth="true" required="true"
+                                                     requiredMessage="Seleccione la ubicación">
+                                        <f:selectItem noSelectionOption="true"
+                                                      itemLabel="Seleccione:" />
+                                        <f:selectItems value="#{EmpleadoC.listarUbig()}" var="ubi"
+                                                       itemValue="#{ubi.codigoUbigeo}"
+                                                       itemLabel="#{ubi.departamento} - #{ubi.provincia} - #{ubi.distrito}" />
+                                    </p:selectOneMenu>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p:commandButton id="btnModificar" value="Modificar" actionListener="#{EmpleadoC.modificar()}" 
+                                         update="frmModificar :frmTablaUsu:tablaUsu"
+                                         style="margin-right: 5px; margin-top: -20px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                         oncomplete="if(!args.validationFailed)PF('wdlgDatos').hide();">
+                            <p:confirm header="Confirmación" message="¿Deseas Modificar?" icon="ui-icon-alert"/>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                                <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                                <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close"/>
+                            </p:confirmDialog>
+                        </p:commandButton>  
+                        <p:commandButton style="margin-right: 5px; margin-top: -20px; margin-bottom: -15px; font-weight:bold; font-size:16px; border-radius: 60px"
+                                         value="Cancelar" immediate="true" oncomplete="PF('wdlgDatos').hide();" />
+                    </p:panelGrid>  
+                </h:form>
+            </p:dialog>
+            <!--        Fin del Dialogo del Empleado    >-->
+        </center>
+    </h:body>
+    <h:outputScript library="js" name="..//resources/js/spanishLocales.js"/>
+</html>

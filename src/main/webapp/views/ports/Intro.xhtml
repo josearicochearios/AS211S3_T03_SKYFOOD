@@ -1,0 +1,185 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+      lang="en">
+    <h:head>
+        <title>SkyFood - Sistema de Ventas</title>
+        <style>
+            body {
+                background-color: #FFF5E1;
+            }
+        </style>
+    </h:head>
+    <h:body>
+
+        <!--Botón Para Continuar A La Siguiente Ventana-->
+        <center>
+            <div style="margin-bottom: 10px">
+                <h:form>
+                    <p:button outcome="Empleado" value="Comenzemos!!!" icon="pi pi-heart-fill"
+                              styleClass="ui-button-outlined ui-button-warning"
+                              style="color: #781C68">
+                    </p:button>
+                </h:form>
+            </div>
+        </center>
+        <!--Botón Para Continuar A La Siguiente Ventana-->
+
+        <!--Logo Del Proyecto de Software-->
+        <center><h:graphicImage id="logo" url="/image/logito.png"/></center>
+        <!--Logo Del Proyecto de Software-->
+
+        <div class="card">
+            <h:form>
+
+                <p:growl id="msgs" showDetail="true" skipDetailIfEqualsSummary="true"/>
+
+                <p:fieldset legend="Nombre del Proyecto de Software:">
+                    <p class="m-0">
+                        El nombre es: <strong><i>SkyFood.</i></strong>
+                    </p>
+                </p:fieldset>
+
+                <br/>
+
+                <p:fieldset legend="Descripción del Modelo de Negocio:" toggleable="true" toggleSpeed="500">
+                    <p:ajax event="toggle" listener="#{PortadaC.NotificacionPortada}" update="msgs"/>
+                    <p class="m-0">
+                        El negocio se trata de un Restaurante que se está ubicado en <strong><i>Imperial - Cañete</i></strong>, es un negocio familiar,
+                        es un lugar donde se venden distintos tipos de platillos como por ejemplo:<br/>
+                        <br/>
+                        1.- Platillos Marinos.<br/>
+                        2.- Platillo Costeños.<br/>
+                        3.- Platillos Andinos.<br/>
+                        <br/>
+                        Además se trabaja de manera presencial, si llega un cliente se le atiende de inmediato, pero también se
+                        puede separar la atención de manera online (WhatsApp), el dueño cuenta con un cuaderno donde guarda los
+                        nombres de los trabajadores con todos sus datos completos, además también tiene los nombres de los
+                        proveedores de sus insumos para cada respectivo platillo.<br/>
+                    </p>
+                </p:fieldset>
+
+                <br/>
+
+                <p:fieldset legend="Objetivos Generales:" toggleable="true" toggleSpeed="500">
+                    <p:ajax event="toggle" listener="#{ObjetivosC.NotificacionObjetivos}" update="msgs"/>
+                    <p class="m-0">
+                        Poder registrar la información del cliente incluyendo el pedido de los platos que va a realizar, y para
+                        el mesero que tenga la información de los platos a la mano para poder ofrecerlos.<br/>
+                        Además de poder ver los pedidos hechos, y de las compras que se pueden realizar para poder completar los insumos para la
+                        preparación de cada uno de los platos de comida y del menú.<br/>
+                    </p>
+                </p:fieldset>
+
+                <br/>
+
+                <p:fieldset legend="Objetivos Especificos:" toggleable="true" toggleSpeed="500">
+                    <p:ajax event="toggle" listener="#{EspecificosC.NotificacionObjetivosEspecificos}" update="msgs"/>
+                    <p class="m-0">
+                        Los objetivos que se esperan:<br/>
+                        <br/>
+                        1.- Poder llevar el registro adecuado de las personas que tienen un flujo dentro o fuera del restaurante.<br/>
+                        2.- Contar con la opción de registrar, modificar y restaurar, cualquier registro dentro del sistema.<br/>
+                        3.- Contar con reportes de los registros, ya sea en las maestras o en las transacciones.<br/>
+                        4.- Poder gestionar a los empleados y los datos de estos mismos.<br/>
+                    </p>
+                </p:fieldset>
+
+
+                <br/>
+
+                <p:fieldset legend="Requerimientos Funcionales:" toggleable="true" toggleSpeed="500">
+                    <p:ajax event="toggle" listener="#{RequerimientosC.NotificacionRequerimientos}" update="msgs"/>
+                    <p class="m-0">
+                        1.- Entorno fácil de usar y entender.<br/>
+                        2.- Llevar el conteo de los pedidos en tipo delivery.<br/>
+                        3.- Visualizar los precios y datos de los productos.<br/>
+                        4.- Contener los datos de los clientes.<br/>
+                    </p>
+                </p:fieldset>
+
+                <br/>
+
+                <p:fieldset legend="Requerimientos No Funcionales:" toggleable="true" toggleSpeed="500">
+                    <p:ajax event="toggle" listener="#{NoFuncionalesC.NotificacionNoFuncionales}" update="msgs"/>
+                    <p class="m-0">
+                        1.- Disponibilidad de los datos.<br/>
+                        2.- Seguridad de los datos y usos.<br/>
+                        3.- Extraer y modificar los datos.<br/>
+                    </p>
+                </p:fieldset>
+
+                <br/>
+
+                <p:fieldset legend="Encargados del Proyecto de Software:">
+                    <p class="m-0">
+                        Los desarrolladores encargado de este Proyecto de Software son:<br/>
+                        <br/>
+                        1.- Sanchez Alcala, Carlos Edidson.<br/>
+                        2.- Cama Elias, Naomi Shantal.<br/>
+                    </p>
+                </p:fieldset>
+
+            </h:form>
+        </div>
+
+        <br/>
+
+        <center>
+            <div class="card" style="margin-left: -350px">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <p:graphicImage url="/image/carlos.jpeg" style="width: 200px"/>
+                    </f:facet>
+
+                    <h:outputText value="Nombres:"/>
+                    <h:outputText value="Carlos Edidson"/>
+
+                    <h:outputText value="Apellidos:"/>
+                    <h:outputText value="Sanchez Alcala"/>
+
+                    <h:outputText value="Team:"/>
+                    <h:outputText value="Team 03"/>
+
+                    <h:outputText value="P. Software:"/>
+                    <h:outputText value="SkyFood"/>
+
+                    <h:outputText value="Cargo:"/>
+                    <h:outputText value="Desarrollador"/>
+                </p:panelGrid>
+            </div>
+        </center>
+
+        <br/>
+
+        <center>
+            <div class="card" style="position: absolute; margin-left: 950px; margin-top: -525.5px">
+                <p:panelGrid columns="2">
+                    <f:facet name="header">
+                        <p:graphicImage url="/image/naomi.jpeg" style="width: 200px"/>
+                    </f:facet>
+
+                    <h:outputText value="Nombres:"/>
+                    <h:outputText value="Naomi Shantal"/>
+
+                    <h:outputText value="Apellidos:"/>
+                    <h:outputText value="Cama Elias"/>
+
+                    <h:outputText value="Team:"/>
+                    <h:outputText value="Team 03"/>
+
+                    <h:outputText value="P. Software:"/>
+                    <h:outputText value="SkyFood"/>
+
+                    <h:outputText value="Cargo:"/>
+                    <h:outputText value="Desarrolladora"/>
+                </p:panelGrid>
+            </div>
+        </center>
+    </h:body>
+</html>

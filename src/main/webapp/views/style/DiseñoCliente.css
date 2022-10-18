@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Concert+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik+Moonrocks&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee+Shade&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rouge+Script&display=swap');
+
+/*Diseño de Cliente.xhtml*/
+
+#ListadoDeCliente{
+    font-family: 'Rouge Script', cursive;
+    font-size: 40px;
+    margin-top: -10px;
+    margin-bottom: 4px;
+}
+
+#cartaLetra {
+    line-height: 1.5;
+    margin: 0;
+}

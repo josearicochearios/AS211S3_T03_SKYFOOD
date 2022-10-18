@@ -1,0 +1,169 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+    <h:head>
+        <title>SkyFood - Sistema de Ventas</title>
+    </h:head>
+    <h:body>
+
+        <!--Menu de las capas-->
+
+        <div class="card">
+            <h:form style="margin-bottom: 15px">
+                <p:growl id="messages"/>
+                <p:menubar>
+                    <p:submenu label="Personas" icon="pi pi-users">
+                        <p:menuitem value="Empleado" outcome="Empleado" icon="pi pi-shopping-cart"/>
+                        <p:menuitem value="Cliente" outcome="Cliente" icon="pi pi-chart-line"/>
+                        <p:menuitem value="Proveedor" outcome="Proveedor" icon="pi pi-users"/>
+                    </p:submenu>
+
+                    <p:submenu label="Acciones" icon="pi pi-sliders-h">
+                        <p:menuitem value="Listado de Venta" outcome="ListarVenta" update="messages" icon="pi pi-refresh"/>
+                        <p:menuitem value="Ventas" outcome="Venta" update="messages" icon="pi pi-refresh"/>
+                    </p:submenu>
+
+                    <p:submenu label="Carta" icon="pi pi-tags">
+                        <p:menuitem value="Platillo" outcome="Platillo" update="messages" icon="pi pi-refresh"/>
+                    </p:submenu>
+
+                    <p:divider layout="vertical"/>
+
+                    <f:facet name="options">
+                        <p:button value="Cerrar Sesion" outcome="Intro" icon="pi pi-fw pi-sign-out" style="border-radius: 60px" styleClass="ui-button-info"/>
+                    </f:facet>
+                </p:menubar>
+            </h:form>
+        </div>
+
+        <!--Menu de las capas-->
+
+        <!-- Botón nuevo -->
+        <h:form>
+            <p:toolbar>
+                <p:toolbarGroup>
+                    <p:commandButton icon="pi pi-users"
+                                     style="margin-bottom: 0.5px; margin-top: 0.5px"
+                                     value="Nuevo Registro"
+                                     update=":formCabezera" oncomplete="PF('wdlgRegistro').show()"
+                                     styleClass="ui-button-raised ui-button-danger ui-button-flat">
+                        <p:resetInput target=":RegUsu"/>
+                    </p:commandButton>
+                </p:toolbarGroup>
+            </p:toolbar>
+        </h:form>
+        <!-- Botón nuevo -->
+
+        <center>  
+            <p:growl showDetail="true" id="messages" >
+                <p:autoUpdate/> 
+            </p:growl>
+        </center>  
+
+        <p:spacer height="0"/>        
+        <p:dialog header="REGISTRAR:" widgetVar="wdlgRegistro" id="dlgRegistro">
+            <h:form id="formCabezera">
+                
+                <p:panelGrid columns="6" id="cabezera">
+
+                    <p:outputLabel value="DNI del Empleado: " />
+                    <p:commandButton value="Buscar" style="font-weight:bold; font-size:16px; margin-left: 10px; border-radius: 60px;"
+                                     action="#{VentaC.filtrado1()}" update="txtNombreEmpleado txtApellidoEmpleado">
+                        <p:inputText id="NombreEmpleado" value="#{VentaC.emp.dniEmpleado}" maxlength="8"/>
+                    </p:commandButton>
+
+                    <p:outputLabel value="Nombre del Empleado: "/>
+                    <p:outputLabel id="txtNombreEmpleado" value="#{VentaC.emp.nombreEmpleado}" />
+
+                    <p:outputLabel value="Apellido del Empleado: "/>
+                    <p:outputLabel id="txtApellidoEmpleado" value="#{VentaC.emp.apellidoEmpleado}" />
+
+                    <p:outputLabel value="DNI del Cliente:  " />
+                    <p:commandButton value="Buscar" style="font-weight:bold; font-size:16px; margin-left: 10px; border-radius: 60px"
+                                     action="#{VentaC.filtrado()}" update="txtNombreCliente txtApellidoCliente">
+                        <p:inputText id="NombreCliente" value="#{VentaC.cli.dniCliente}" maxlength="8"/>
+                    </p:commandButton>
+
+                    <p:outputLabel value="Nombre del Cliente: "/>
+                    <p:outputLabel id="txtNombreCliente" value="#{VentaC.cli.nombreCliente}" />
+
+                    <p:outputLabel value="Apellido del Cliente: "/>
+                    <p:outputLabel id="txtApellidoCliente" value="#{VentaC.cli.apellidoCliente}" />
+
+                    <p:outputLabel value="Menu"/>
+                    <p:commandButton value="Mostrar" style="font-weight:bold; font-size:16px; margin-left: 10px; border-radius: 60px"
+                                     action="#{VentaC.mostrar()}" update="txtPrecio" >
+                        <p:autoComplete id="AutocompletarProducto" value="#{VentaC.platillo.nombrePlatillo}" completeMethod="#{VentaC.autocompletePrueba}" immediate="true" />
+                    </p:commandButton>
+
+                    <p:outputLabel  value="Precio: "/>
+                    <p:outputLabel id="txtPrecio" value="#{VentaC.platillo.precioPlatillo}"/>
+
+                    <p:outputLabel value="Cantidad"/>
+                    <p:spinner id="Cantidad" value="#{VentaC.platillo.cantidadPlatillo}" max="20" min="1"
+                               required="true" requiredMessage="Ingrese la Cantidad" maxlength="2" style="width: 165px">
+                    </p:spinner>
+
+                    <p:outputLabel value="Fecha" />
+                    <p:calendar id="fecha" value="#{VentaC.venta.fechaVenta}"
+                                pattern="dd/MM/yyyy" navigator="true" locale="de" maxdate="@now" mindate="@now"
+                                required="true" requiredMessage="Ingrese la fecha" size="18">
+                    </p:calendar>
+                    
+                </p:panelGrid>
+
+                <center>
+                    <p:commandButton value="Agregar" actionListener="#{VentaC.listaTemporal()}" update="formTablaTemporal:tablaTemporal formTablaTemporal:txttotal"
+                                     style="margin-bottom: -400px; margin-top: 10px; font-weight:bold; font-size:16px; margin-left: 10px; border-radius: 60px"/>
+                    <p:spacer height="20 px"/>
+                    <p:commandButton value="Limpiar datos" actionListener="#{VentaC.limpiar()}"
+                                     update="formCabezera"
+                                     style="margin-bottom: -400px; margin-top: 10px; margin-left: 10px; font-weight:bold; font-size:16px; margin-left: 10px; border-radius: 60px"/>
+                    <p:spacer height="20 px"/>
+                    <p:commandButton value="Guardar Venta" actionListener="#{VentaC.registrar()}" update="formCabezera:cabezera formTablaTemporal:tablaTemporal formTablaTemporal:txttotal"
+                                     style="margin-bottom: -400px; margin-top: 10px; margin-left: 10px; font-weight:bold; font-size:16px; margin-left: 10px; border-radius: 60px"/>
+                    <p:spacer height="20 px"/>
+                </center>
+
+            </h:form>
+        </p:dialog>
+
+        <h:form>
+            <p:commandButton value="Limpiar datos" actionListener="#{VentaC.limpiar()}"
+                             update="formCabezera:cabezera formTablaTemporal:tablaTemporal formTablaTemporal:txttotal"
+                             style="margin-bottom: 10px"/>
+        </h:form>
+
+        <p:spacer height="20 px"/>
+        <h:form id="formTablaTemporal">
+            <p:dataTable var="tblProlis" id="tablaTemporal"
+                         emptyMessage="La lista esta sin datos para mostrar, agregue datos porfavor."
+                         value="#{VentaC.listadovendet}" rows="20">
+                <p:column headerText="Descripción:">
+                    <h:outputText value="#{tblProlis.nombrePlatillo}"  />
+                </p:column>
+                <p:column headerText="Cantidad:">
+                    <h:outputText value="#{tblProlis.cantidadVentaDetalle}"/>
+                </p:column>
+                <p:column headerText="Precio:">
+                    <h:outputText value="#{tblProlis.precioPlatillo}"  />
+                </p:column>
+                <p:column headerText="SubTotal:" >
+                    <h:outputText value="#{tblProlis.subtotalPlatillo}" />
+                </p:column>
+
+            </p:dataTable>
+
+            <div style="font-weight: bold;float: right">
+                <h:outputLabel value="Total: "/>
+                <h:outputLabel value="#{VentaC.total}" id="txttotal"/>  
+            </div>
+            <p:separator/>
+        </h:form>
+    </h:body>
+</html>
